@@ -1,0 +1,63 @@
+# Action,Command
+# Start,limactl start dev-env.yaml
+# Stop,limactl stop dev-env
+# SSH Shell,limactl shell dev-env
+# Docker (inside),limactl shell dev-env docker ps
+# View Logs,tail -f ~/.lima/dev-env/serial.log
+
+# Virtual Machine Engine
+vmType: "vz" # Apple Virtualization Framework (Native M-series speed)
+
+# Hardware Resources
+cpus: 4
+memory: "12GiB"
+disk: "100GiB"
+
+# OS Images: Debian 12 "Bookworm" (Stable)
+images:
+  - location: "https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-genericcloud-arm64.qcow2"
+    arch: "aarch64"
+
+# Apple Silicon
+# Rosetta: Run Intel binaries on ARM Linux transparently
+vmOpts:
+  vz:
+    rosetta:
+      enabled: true
+      binfmt: true
+
+# Integration
+mounts:
+  - location: "~/code"
+    writable: true
+  # - location: "./bin"
+  #   writable: false
+  #   mountPoint: "/mnt/bin"
+ssh:
+  forwardAgent: true
+
+# Forward the Docker Socket to macOS
+# This allows JetBrains/VS Code to talk to Docker inside the VM
+# echo "$(limactl list dev-env --format 'unix://{{.Dir}}/sock/docker.sock')"
+portForwards:
+  - guestSocket: "/var/run/docker.sock"
+    hostSocket: "{{.Dir}}/sock/docker.sock"
+  # VNC for JetBrains
+  - guestPort: 5901
+    hostPort: 5901
+
+provision:
+  - mode: system
+    script: |
+      #!/bin/bash
+      echo "Intenionally left blank, this logic was replaced by bin/provision-root.sh"
+  - mode: user
+    script: |
+      #!/bin/bash
+      echo "Intenionally left blank, this logic was replaced by bin/provision-root.sh"
+
+# Health Check: Wait until all provisioning is complete
+probes:
+  - script: |
+      #!/bin/bash
+      echo "Login to the shell and run `sudo ./code/dev-env/bin/provision-root.sh` and `./code/dev-env/bin/provision-user.sh`"
