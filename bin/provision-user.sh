@@ -47,41 +47,22 @@ if ! asdf --version >/dev/null 2>&1; then
 fi
 
 # Install Node.js Plugin
-asdf plugin-add nodejs https://github.com/asdf-vm/asdf-nodejs.git
-
-# Import Node.js release team keyring with proper error handling
-if [ -f ~/.asdf/plugins/nodejs/bin/import-release-team-keyring ]; then
-    bash ~/.asdf/plugins/nodejs/bin/import-release-team-keyring || echo "Keyring import failed, but continuing..."
-else
-    echo "Keyring import script not found, skipping..."
-fi
-
-# Install latest Node.js with retry logic
-if ! asdf install nodejs latest; then
-    echo "Node.js installation failed, trying specific version..."
-    asdf install nodejs 20.0.0 || echo "Node.js installation failed completely"
-fi
-
-# Set global Node.js version
-if [ -n "$(asdf list nodejs | tail -1)" ]; then
-    asdf global nodejs $(asdf list nodejs | tail -1)
-else
-    echo "No Node.js versions available to set as global"
-fi
+asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
+asdf install nodejs 24.13.1
 
 # Install Java Plugin
 asdf plugin-add java https://github.com/halcyon/asdf-java.git
-asdf install java latest:adoptopenjdk
-asdf global java $(asdf list java | tail -1)
+asdf install java adoptopenjdk-25.0.2+10.0.LTS
 
 # Install Python Plugin
 asdf plugin-add python https://github.com/asdf-community/asdf-python.git
-asdf install python latest
-asdf global python $(asdf list python | tail -1)
+asdf install python 3.14.3
 
-# Install pip and Mistral Vibe
+# Install pip
 python -m ensurepip --upgrade
 python -m pip install --upgrade pip
+
+# Intall Mistral Vibe
 pip install mistral-vibe
 
 # Install Oh My Zsh
