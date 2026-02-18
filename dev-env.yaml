@@ -30,9 +30,6 @@ vmOpts:
 mounts:
   - location: "~/code"
     writable: true
-  # - location: "./bin"
-  #   writable: false
-  #   mountPoint: "/mnt/bin"
 ssh:
   forwardAgent: true
 

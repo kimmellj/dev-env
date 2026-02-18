@@ -49,14 +49,17 @@ fi
 # Install Node.js Plugin
 asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
 asdf install nodejs 24.13.1
+asdf global nodejs 24.13.1
 
 # Install Java Plugin
 asdf plugin-add java https://github.com/halcyon/asdf-java.git
 asdf install java adoptopenjdk-25.0.2+10.0.LTS
+asdf global java adoptopenjdk-25.0.2+10.0.LTS
 
 # Install Python Plugin
 asdf plugin-add python https://github.com/asdf-community/asdf-python.git
 asdf install python 3.14.3
+asdf global python 3.14.3
 
 # Install pip
 python -m ensurepip --upgrade
