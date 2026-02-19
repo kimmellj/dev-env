@@ -46,8 +46,9 @@ portForwards:
 provision:
   - mode: system
     script: |
-      #!/bin/bash
-      echo "Intenionally left blank, this logic was replaced by bin/provision-root.sh"
+      apt-get update
+      apt-get install -y zsh
+      chsh -s /usr/bin/zsh $USER
   - mode: user
     script: |
       #!/bin/bash
