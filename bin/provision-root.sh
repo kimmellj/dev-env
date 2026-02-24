@@ -54,11 +54,9 @@ if ! grep -q "^/usr/bin/zsh" /etc/shells; then
     echo "/usr/bin/zsh" >> /etc/shells
 fi
 
-if [ -x "$(command -v zsh)" ]; then
-    echo "Setting zsh as default shell for $USER"
-    chsh -s $(which zsh) $USER
-    usermod --shell $(which zsh) $USER
-fi
+echo "Setting zsh as default shell for $USER"
+chsh -s $(which zsh) $USER
+usermod --shell $(which zsh) $USER
 
 if [ -x "$(command -v zsh)" ]; then
     echo "Setting zsh as default shell for root"
@@ -67,19 +65,12 @@ if [ -x "$(command -v zsh)" ]; then
 fi
 
 # Install NeoVim
-echo "Installing core dependencies..."
-sudo apt install -y \
-
 echo "Installing Neovim..."
-if ! command -v nvim &> /dev/null; then
-    cd /tmp
-    curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
-    chmod u+x nvim.appimage
-    sudo mv nvim.appimage /usr/local/bin/nvim
-    echo "Neovim installed to /usr/local/bin/nvim"
-else
-    echo "Neovim already installed, skipping..."
-fi
+cd /tmp
+curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-arm64.appimage
+chmod u+x nvim-linux-arm64.appimage
+sudo mv nvim-linux-arm64.appimage /usr/local/bin/nvim
+echo "Neovim installed to /usr/local/bin/nvim"
 
 # Configure fd-find symlink
 if [ -f /usr/bin/fdfind ] && [ ! -f /usr/local/bin/fd ]; then

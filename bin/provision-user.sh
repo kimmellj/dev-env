@@ -100,3 +100,6 @@ eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
 brew install gcc
 brew install git-xet
 git xet install
+
+# Open Code
+curl -fsSL https://opencode.ai/install | bash

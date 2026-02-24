@@ -142,6 +142,7 @@ To modify the Lima VM configuration:
 - **Port Conflicts**: If a port is already in use on your host, Lima will not be able to forward it. Ensure the port is free or configure Lima to use a different port.
 - **File Sharing Permissions**: Ensure the directories you want to share have the correct permissions.
 - **Provisioning Errors**: If a provisioning script fails, check the error message and ensure all dependencies are installed.
+- **SSH Key Not Forwarded**: Run `ssh-agent` and `ssh-add` to forward your SSH key:
 
 ### Debugging
 To debug issues with the VM, you can:
