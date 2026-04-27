@@ -34,7 +34,7 @@ This repository provides a **Lima**-based development environment for setting up
 
 2. **Start the Lima VM**:
    ```sh
-   lima start
+   limactl create --name dev-env ./dev-env.yaml
    ```
    This will create and start a VM based on the configuration provided in the repository.
 
