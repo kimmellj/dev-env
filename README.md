@@ -2,7 +2,7 @@
 
 ## TL;DR
 
-This repository provides a **Lima**-based development environment for setting up a fully configured Linux virtual machine (VM) with Docker, ASDF, NeoVim, and other essential tools. Lima is a lightweight VM manager that simplifies the process of running Linux VMs on macOS with features like **automatic port mapping**, **file sharing**, and **seamless integration** with your host system.
+This repository provides a **Lima**-based development environment for setting up a fully configured Fedora Linux virtual machine (VM) with Docker, ASDF, NeoVim, and other essential tools. Lima is a lightweight VM manager that simplifies the process of running Linux VMs on macOS with features like **automatic port mapping**, **file sharing**, and **seamless integration** with your host system.
 
 ### Key Features of Lima:
 - **Automatic Port Mapping**: Lima automatically forwards ports from the VM to your host, making it easy to access services running inside the VM.

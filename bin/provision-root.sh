@@ -9,28 +9,27 @@ if [ "$(id -u)" -ne 0 ]; then
     exit 1
 fi
 
-# Install Docker, Python, and various dependencies
-apt-get update
-apt-get install -y ca-certificates curl gnupg jq build-essential \
-    libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev \
-    libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev \
-    pkg-config libxml2-dev libsqlite3-dev libcurl4-openssl-dev libpng-dev libonig-dev \
-    libzip-dev libpq-dev zsh git wget build-essential gcc make unzip ripgrep \
-    fd-find nodejs npm lua5.1 luarocks
+DNF_OPTS="--nodocs --setopt=install_weak_deps=False"
 
-install -m 0755 -d /etc/apt/keyrings
+# Install core dependencies
+dnf install -y $DNF_OPTS dnf-plugins-core
+dnf install -y $DNF_OPTS \
+    ca-certificates curl gnupg2 jq \
+    gcc gcc-c++ make patch which \
+    openssl-devel zlib-devel bzip2-devel readline-devel sqlite-devel \
+    ncurses-devel xz xz-devel tk-devel libffi-devel \
+    pkgconf-pkg-config libxml2-devel libcurl-devel libpng-devel \
+    oniguruma-devel libzip-devel libpq-devel \
+    zsh git wget unzip ripgrep fd-find \
+    lua luarocks
 
-# Install Docker
-curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-chmod a+r /etc/apt/keyrings/docker.gpg
-
-echo \
-"deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
-$(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-tee /etc/apt/sources.list.d/docker.list > /dev/null
-
-apt-get update
-apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+# Install Docker (DNF5 uses `addrepo --from-repofile`; DNF4 used `--add-repo`)
+if dnf config-manager addrepo --help >/dev/null 2>&1; then
+    dnf config-manager addrepo --from-repofile=https://download.docker.com/linux/fedora/docker-ce.repo
+else
+    dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
+fi
+dnf install -y $DNF_OPTS docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
 # Configure Docker API version
 mkdir -p /etc/docker
@@ -50,18 +49,19 @@ systemctl enable --now docker.socket
 systemctl restart docker.socket
 
 # Configure Zsh as the default shell
-if ! grep -q "^/usr/bin/zsh" /etc/shells; then
-    echo "/usr/bin/zsh" >> /etc/shells
+ZSH_BIN=$(command -v zsh)
+if ! grep -q "^${ZSH_BIN}$" /etc/shells; then
+    echo "${ZSH_BIN}" >> /etc/shells
 fi
 
 echo "Setting zsh as default shell for $USER"
-chsh -s $(which zsh) $USER
-usermod --shell $(which zsh) $USER
+chsh -s "${ZSH_BIN}" $USER
+usermod --shell "${ZSH_BIN}" $USER
 
 if [ -x "$(command -v zsh)" ]; then
     echo "Setting zsh as default shell for root"
-    chsh -s $(which zsh) root
-    usermod --shell $(which zsh) root
+    chsh -s "${ZSH_BIN}" root
+    usermod --shell "${ZSH_BIN}" root
 fi
 
 # Install NeoVim
@@ -69,19 +69,13 @@ echo "Installing Neovim..."
 cd /tmp
 curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-arm64.appimage
 chmod u+x nvim-linux-arm64.appimage
-sudo mv nvim-linux-arm64.appimage /usr/local/bin/nvim
+mv nvim-linux-arm64.appimage /usr/local/bin/nvim
 echo "Neovim installed to /usr/local/bin/nvim"
-
-# Configure fd-find symlink
-if [ -f /usr/bin/fdfind ] && [ ! -f /usr/local/bin/fd ]; then
-    sudo ln -s /usr/bin/fdfind /usr/local/bin/fd
-    echo "Created fd symlink"
-fi
 
 # Install lazygit
 LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
-curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
+curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_arm64.tar.gz"
 tar xf lazygit.tar.gz lazygit
-sudo install lazygit /usr/local/bin
+install lazygit /usr/local/bin
 rm lazygit lazygit.tar.gz
 echo "lazygit installed"

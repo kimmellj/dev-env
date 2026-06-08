@@ -10,18 +10,6 @@
 # Enforce strict error checking and help scripts fail fast when things go wrong
 set -eux -o pipefail
 
-# Install Dot Files
-# If path doesn't exist clone the repository
-# if [ ! -d ~/dotfiles ]; then
-#     git clone https://github.com/kimmellj/dotfiles ~/dotfiles
-# fi
-
-# cd ~/dotfiles
-# git pull origin master
-
-# chmod +x ./bootstrap.sh
-# ./bootstrap.sh
-
 cd ~/
 
 # Install ASDF and Plugins

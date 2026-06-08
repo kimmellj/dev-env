@@ -13,9 +13,9 @@ cpus: 4
 memory: "12GiB"
 disk: "100GiB"
 
-# OS Images: Debian 12 "Bookworm" (Stable)
+# OS Images: Fedora 42 Cloud (Minimal)
 images:
-  - location: "https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-genericcloud-arm64.qcow2"
+  - location: "https://dl.fedoraproject.org/pub/fedora/linux/releases/42/Cloud/aarch64/images/Fedora-Cloud-Base-Generic-42-1.1.aarch64.qcow2"
     arch: "aarch64"
 
 # Apple Silicon
@@ -46,13 +46,12 @@ portForwards:
 provision:
   - mode: system
     script: |
-      apt-get update
-      apt-get install -y zsh
+      dnf install -y --nodocs --setopt=install_weak_deps=False zsh
       chsh -s /usr/bin/zsh $USER
   - mode: user
     script: |
       #!/bin/bash
-      echo "Intenionally left blank, this logic was replaced by bin/provision-root.sh"
+      echo "Intentionally left blank, this logic was replaced by bin/provision-root.sh"
 
 # Health Check: Wait until all provisioning is complete
 probes:
